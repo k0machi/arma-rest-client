@@ -1,0 +1,22 @@
+﻿<Window x:Class="arma_dummy.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:arma_dummy"
+        mc:Ignorable="d"
+        Title="Arma-Dummy" Height="258.666" Width="300.333" ResizeMode="NoResize">
+    <Grid>
+        <Label Content="callExtension" HorizontalAlignment="Left" Height="28" Margin="10,5,0,0" VerticalAlignment="Top" Width="92"/>
+        <TextBox x:Name="funcCall_func_name" HorizontalAlignment="Left" Height="24" Margin="10,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="153" Text="function"/>
+        <Button x:Name="RVExtensionBtn" Content="RVExtension" HorizontalAlignment="Left" Height="24" Margin="177,38,0,0" VerticalAlignment="Top" Width="99" Click="BtnFunc_Click"/>
+        <Label Content="callExtensionArgs" HorizontalAlignment="Left" Height="29" Margin="10,67,0,0" VerticalAlignment="Top" Width="153"/>
+        <TextBox x:Name="argCall_func_name" HorizontalAlignment="Left" Height="24" Margin="10,101,0,0" TextWrapping="Wrap" Text="function" VerticalAlignment="Top" Width="153"/>
+        <Button x:Name="RVExtensionArgsBtn" Content="RVExtensionArgs" HorizontalAlignment="Left" Height="53" Margin="177,101,0,0" VerticalAlignment="Top" Width="99" Click="BtnArgs_Click"/>
+        <TextBox x:Name="argCall_argv" HorizontalAlignment="Left" Height="24" Margin="10,130,0,0" TextWrapping="Wrap" Text="arguments" VerticalAlignment="Top" Width="153"/>
+        <Button x:Name="VersionBtn" Content="?" HorizontalAlignment="Left" Height="18" Margin="259,5,0,0" VerticalAlignment="Top" Width="17" Click="VersionBtn_Click"/>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="43" Margin="10,159,0,0" VerticalAlignment="Top" Width="266">
+            <TextBox x:Name="ResultFld" TextWrapping="Wrap" Text="TextBox" Margin="0,0,-1,0" AcceptsReturn="True"/>
+        </Border>
+    </Grid>
+</Window>
