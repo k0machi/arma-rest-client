@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "extension", "src\src.vcxproj", "{CBB6DABB-2236-4709-A885-1887B7B7B900}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "arma-dummy", "..\arma-extensions\arma-dummy\arma-dummy.csproj", "{9C054FF7-222E-4B26-AC09-AF3B9C359FEB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "arma-dummy", "arma-dummy\arma-dummy.csproj", "{9C054FF7-222E-4B26-AC09-AF3B9C359FEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
