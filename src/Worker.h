@@ -9,6 +9,7 @@ namespace ozk
 	public:
 		Worker();
 		~Worker();
+		bool Active();
 		void Terminate();
 	private:
 		bool ShouldExit();
