@@ -31,7 +31,7 @@ namespace arma_dummy
             StringBuilder output = new StringBuilder(1024);
             string func = argCall_func_name.Text;
             string[] args = argCall_argv.Text.Split(new char[] { ',' });
-            RVCommand.RVExtensionArgs(output, output.Capacity, func, args, args.Length);
+            ReturnCode.Text = (RVCommand.RVExtensionArgs(output, output.Capacity, func, args, args.Length)).ToString();
             ResultFld.Text = output.ToString();
         }
 
@@ -45,9 +45,10 @@ namespace arma_dummy
 
         private void VersionBtn_Click(object sender, RoutedEventArgs e)
         { 
-            StringBuilder output = new StringBuilder(1024);
+            StringBuilder output = new StringBuilder(10240);
             RVCommand.RVExtensionVersion(output, output.Capacity);
             ResultFld.Text = output.ToString();
         }
+
     }
 }

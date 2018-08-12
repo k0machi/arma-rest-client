@@ -22,7 +22,7 @@ namespace arma_dummy
         [DllImport(".\\extension_x64.dll", CallingConvention = CallingConvention.StdCall)]
         public static extern void RVExtension(StringBuilder output, int outputSize, string function);
         [DllImport(".\\extension_x64.dll", CallingConvention = CallingConvention.StdCall, ExactSpelling = true)]
-        public static extern void RVExtensionArgs(StringBuilder output, int outputSize, string function, string[] argv, int argc);
+        public static extern int RVExtensionArgs(StringBuilder output, int outputSize, string function, string[] argv, int argc);
         [DllImport(".\\extension_x64.dll", CallingConvention = CallingConvention.StdCall, ExactSpelling = true)]
         public static extern void RVExtensionVersion(StringBuilder output, int outputSize);
     }
