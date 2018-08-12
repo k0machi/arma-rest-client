@@ -54,9 +54,9 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 	if (func == "CheckJob") {
 		auto id = std::stoi(vecArgs[0]);
 		if (ozk::Scheduler::GetInstance()->GetCompletedJob(id)) {
-			return 0;
-		} else {
 			return 1;
+		} else {
+			return 0;
 		}
 	}
 	if (func == "GetResult") {

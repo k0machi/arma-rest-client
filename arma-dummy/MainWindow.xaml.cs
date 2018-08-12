@@ -28,7 +28,7 @@ namespace arma_dummy
 
         private void BtnArgs_Click(object sender, RoutedEventArgs e)
         {
-            StringBuilder output = new StringBuilder(1024);
+            StringBuilder output = new StringBuilder(10240);
             string func = argCall_func_name.Text;
             string[] args = argCall_argv.Text.Split(new char[] { ',' });
             ReturnCode.Text = (RVCommand.RVExtensionArgs(output, output.Capacity, func, args, args.Length)).ToString();
@@ -37,7 +37,7 @@ namespace arma_dummy
 
         private void BtnFunc_Click(object sender, RoutedEventArgs e)
         {
-            StringBuilder output = new StringBuilder(1024);
+            StringBuilder output = new StringBuilder(10240);
             string func = funcCall_func_name.Text;
             RVCommand.RVExtension(output, output.Capacity, func);
             ResultFld.Text = output.ToString();
