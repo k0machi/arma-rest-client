@@ -4,6 +4,19 @@
 #include "Scheduler.h"
 #include "GetRequest.h"
 #include "Worker.h"
+#include "Poco/Logger.h"
+#include "Poco/AutoPtr.h"
+#include "Poco/PatternFormatter.h"
+#include "Poco/FormattingChannel.h"
+#include "Poco/FileChannel.h"
+#include "Poco/Message.h"
+
+using Poco::Logger;
+using Poco::AutoPtr;
+using Poco::PatternFormatter;
+using Poco::FormattingChannel;
+using Poco::FileChannel;
+using Poco::Message;
 
 std::vector<ozk::Worker*> g_ExtensionWorkers;
 
@@ -20,6 +33,14 @@ void InitializeWorkers() {
 	}
 }
 
+void InitializeLogging() {
+	FormattingChannel* pFCFile = new FormattingChannel(new PatternFormatter("%Y-%m-%d %H:%M:%S.%c %N[%P]:%s:%q:%t"));
+	pFCFile->setChannel(new FileChannel("rest-client.log"));
+	pFCFile->open();
+
+	Logger& fileLogger = Logger::create("FileLogger", pFCFile, Message::PRIO_INFORMATION);
+}
+
 extern "C"
 {
 	//--- Engine called on extension load 
@@ -32,6 +53,7 @@ extern "C"
 
 void RVExtensionVersion(char * output, int outputSize)
 {
+	InitializeLogging();
 	InitializeWorkers();
 
 	strcpy_s(output, outputSize, gc_version);
@@ -49,6 +71,7 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 	if (func == "GETRequest") {
 		auto job = new ozk::GETRequest(vecArgs);
 		auto id = ozk::Scheduler::GetInstance()->AddJob(job);
+		Logger::get("FileLogger").information("Added new GETRequest to queue, id: %d", id);
 		return id;
 	} 
 	if (func == "CheckJob") {

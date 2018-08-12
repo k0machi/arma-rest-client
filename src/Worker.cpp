@@ -1,6 +1,9 @@
 #include "Worker.h"
 #include "Scheduler.h"
+#include "Poco/Logger.h"
 #include <sstream>
+
+using Poco::Logger;
 
 namespace ozk
 {
@@ -56,6 +59,7 @@ namespace ozk
 	}
 
 	void Worker::CompleteJob() {
+		Logger::get("FileLogger").information("Worker completed job id %d", m_cur_job->GetId());
 		Scheduler::GetInstance()->CompleteJob(*m_cur_job);
 		m_cur_job = nullptr;
 	}
