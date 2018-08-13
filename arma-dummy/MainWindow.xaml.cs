@@ -30,7 +30,7 @@ namespace arma_dummy
         {
             StringBuilder output = new StringBuilder(10240);
             string func = argCall_func_name.Text;
-            string[] args = argCall_argv.Text.Split(new char[] { ',' });
+            string[] args = argCall_argv.Text.Split(new string[] { ",," }, StringSplitOptions.None);
             ReturnCode.Text = (RVCommand.RVExtensionArgs(output, output.Capacity, func, args, args.Length)).ToString();
             ResultFld.Text = output.ToString();
         }
