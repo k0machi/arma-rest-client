@@ -15,9 +15,11 @@ namespace ozk {
 		void AssignId(int newId);
 		int GetId();
 		bool IsComplete();
-		void ParseSQFArrayAsMap(std::string& sqfArray);
+		std::unordered_map<std::string, std::string> ParseSQFArrayAsMap(std::string& sqfArray);
 	protected:
 		void Complete(const std::string& result);
+		void Trim(std::string&);
+		std::string GetURL();
 	private:
 		bool m_completed;
 		std::unordered_map<std::string, std::string> m_parameter_map;
