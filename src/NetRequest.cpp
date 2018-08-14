@@ -1,7 +1,6 @@
 #include "NetRequest.h"
 #include "Poco/SharedPtr.h"
 
-
 namespace ozk 
 {
 
@@ -12,22 +11,16 @@ namespace ozk
 	}
 
 	NetRequest::NetRequest(const std::string& uri, const std::string& method) :
-		m_uri(uri),
-		m_path(m_uri.getPathAndQuery()),
-		m_scheme(m_uri.getScheme()),
-		m_request(method, m_path, Poco::Net::HTTPRequest::HTTP_1_1)
+		m_uri(uri)
 	{
-		if (m_path.empty()) {
-			m_path = "/";
-			m_request.setURI(m_path);
-		}
+		this->m_method = method;
 
-		if (m_scheme == "https") {
+		if (this->m_uri.getScheme() == "https") {
 			m_ssl_init = true;
 			Poco::Net::initializeSSL();
-			m_session = &m_https_session;
+			m_session = std::make_shared<HTTPSClientSession>();
 		} else {
-			m_session = &m_http_session;
+			m_session = std::make_shared<HTTPClientSession>();
 		}
 
 		m_session->setHost(m_uri.getHost());
@@ -44,6 +37,9 @@ namespace ozk
 
 	bool NetRequest::DoRequest() {
 
+		std::string path(this->m_uri.getPathAndQuery());
+		Poco::Net::HTTPRequest request(this->m_method, path, Poco::Net::HTTPRequest::HTTP_1_1);
+
 		if (m_ssl_init) {
 			Poco::SharedPtr<Poco::Net::InvalidCertificateHandler> pCertHandler = new DummyInvalidCertificateHandler(false); // ask the user via console
 			Poco::Net::Context::Ptr ptrContext = new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", "rootcert.pem", Poco::Net::Context::VERIFY_RELAXED, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
@@ -51,10 +47,10 @@ namespace ozk
 		}
 
 		for (auto&& pair : m_headers) {
-			m_request.add(pair.first, pair.second);
+			request.add(pair.first, pair.second);
 		}
 
-		std::ostream& requestStream = m_session->sendRequest(m_request);
+		std::ostream& requestStream = m_session->sendRequest(request);
 		requestStream << m_request_body;
 		m_response_body = &m_session->receiveResponse(m_response);
 
@@ -80,7 +76,6 @@ namespace ozk
 			{
 				this->m_uri.addQueryParameter(param.first, param.second);
 			}
-			this->m_request.setURI(this->m_uri.getPathAndQuery());
 		}
 	}
 

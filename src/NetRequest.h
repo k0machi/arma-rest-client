@@ -9,6 +9,10 @@
 #include <iostream>
 #include <map>
 
+using Poco::SharedPtr;
+using Poco::Net::HTTPSClientSession;
+using Poco::Net::HTTPClientSession;
+
 namespace ozk
 {
 	typedef std::map<std::string, std::string> Headers_t;
@@ -27,15 +31,13 @@ namespace ozk
 	private:
 		bool m_ssl_init;
 		Poco::URI m_uri;
-		std::string m_path;
-		std::string m_scheme;
-		Poco::Net::HTTPClientSession *m_session;
+		std::string m_method;
+		std::shared_ptr<HTTPClientSession> m_session;
 		Poco::Net::HTTPClientSession m_http_session{};
 		Poco::Net::HTTPSClientSession m_https_session{};
 		std::string m_location_path;
 		Headers_t m_headers{};
 		std::string m_request_body;
-		Poco::Net::HTTPRequest m_request;
 		Poco::Net::HTTPResponse m_response{};
 		std::istream* m_response_body;
 	};
