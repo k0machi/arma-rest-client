@@ -7,35 +7,34 @@ using Poco::Logger;
 
 namespace ozk 
 {
-	using vec_pairs = std::vector<std::pair<std::string, std::string>>;
-	using map = std::unordered_map<std::string, std::string>;
+	using vec_pairs_t = std::vector<std::pair<std::string, std::string>>;
+	using map_t = std::unordered_map<std::string, std::string>;
 
 	Job::Job(std::vector<std::string>& params)
 	{
-		m_params = params;
 		m_id = -1;
 		m_result = "";
 		m_completed = false;
 
-		this->m_uri = params[0];
-		Trim(this->m_uri);
+		this->m_query_target = params[0];
+		Trim(this->m_query_target);
 
 		try 
 		{
-			this->m_query_params = Poco::AnyCast<vec_pairs>(ParseSQFArray(params.at(1), ParseMode::Pairs));
+			this->m_query_params = Poco::AnyCast<vec_pairs_t>(ParseSQFArray(params.at(1), ParseMode::Pairs));
 		}
 		catch (const std::out_of_range& oor) 
 		{
-			Logger::get("FileLogger").warning("No query parameters supplied for %s", this->m_uri);
+			Logger::get("FileLogger").warning("No query parameters supplied for %s", this->m_query_target);
 		}
 
 		try
 		{
-			this->m_arguments = Poco::AnyCast<map>(ParseSQFArray(params.at(2), ParseMode::Map));
+			this->m_query_arguments = Poco::AnyCast<map_t>(ParseSQFArray(params.at(2), ParseMode::Map));
 		}
 		catch (const std::out_of_range& oor)
 		{
-			Logger::get("FileLogger").warning("No arguments supplied for %s", this->m_uri);
+			Logger::get("FileLogger").warning("No arguments supplied for %s", this->m_query_target);
 		}
 
 	}
@@ -46,11 +45,6 @@ namespace ozk
 	std::string Job::GetResult()
 	{
 		return m_result;
-	}
-
-	std::vector<std::string>& Job::GetParams()
-	{
-		return m_params;
 	}
 
 	void Job::Execute() {
@@ -74,7 +68,7 @@ namespace ozk
 
 	std::string Job::GetURL()
 	{
-		return this->m_uri;
+		return this->m_query_target;
 	}
 
 	bool Job::IsComplete() {

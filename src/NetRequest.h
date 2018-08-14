@@ -21,6 +21,7 @@ namespace ozk
 		bool DoRequest();
 		void SetRequestBody(std::string& newBody);
 		void SetHeader(const std::string& key, const std::string& value);
+		void ApplyQueryParameters(const std::vector<std::pair<std::string, std::string>>&);
 		const Poco::Net::HTTPResponse& GetResponse();
 		std::istream& GetResponseBody();
 	private:

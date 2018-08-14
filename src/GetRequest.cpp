@@ -21,7 +21,7 @@ namespace ozk
 
 	void GETRequest::Execute() {
 		try {
-
+			this->ApplyQueryParameters(this->m_query_params);
 			if (this->DoRequest())
 			{
 				std::stringstream os{};

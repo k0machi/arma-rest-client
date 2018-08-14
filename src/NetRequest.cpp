@@ -41,6 +41,7 @@ namespace ozk
 			Poco::Net::uninitializeSSL();
 	}
 
+
 	bool NetRequest::DoRequest() {
 
 		if (m_ssl_init) {
@@ -69,6 +70,18 @@ namespace ozk
 
 	void NetRequest::SetHeader(const std::string& key, const std::string& value) {
 		m_headers.emplace(key, value);
+	}
+
+	void NetRequest::ApplyQueryParameters(const std::vector<std::pair<std::string, std::string>>& params)
+	{
+		if (!params.empty())
+		{
+			for (const std::pair<std::string, std::string>& param : params)
+			{
+				this->m_uri.addQueryParameter(param.first, param.second);
+			}
+			this->m_request.setURI(this->m_uri.getPathAndQuery());
+		}
 	}
 
 	const Poco::Net::HTTPResponse& NetRequest::GetResponse() {
