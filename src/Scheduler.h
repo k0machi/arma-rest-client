@@ -13,7 +13,7 @@ namespace ozk {
 		static Scheduler* GetInstance();
 		int GetNewId();
 		Job* GetCompletedJob(int id);
-		Job* GetJob();
+		Job* AcquireJob();
 		int AddJob(Job* job);
 		void CompleteJob(Job& job);
 		bool Dispose(Job* job);
