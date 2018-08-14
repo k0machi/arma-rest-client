@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <utility>
 
 namespace ozk {
 	class Job
@@ -15,10 +16,8 @@ namespace ozk {
 		void AssignId(int newId);
 		int GetId();
 		bool IsComplete();
-		std::unordered_map<std::string, std::string> ParseSQFArrayAsMap(std::string& sqfArray);
 	protected:
 		void Complete(const std::string& result);
-		void Trim(std::string&);
 		std::string GetURL();
 	private:
 		bool m_completed;
@@ -31,7 +30,7 @@ namespace ozk {
 		//uri itself, e.g. http://example.com/api/getname/
 		std::string m_uri;
 		//any query parameters for urlencoding into URI, e.g. ?token=abcd&name=alice
-		std::unordered_map<std::string, std::string> m_query_params;
+		std::vector<std::pair<std::string, std::string>> m_query_params;
 		//any other arguments for the request itself, like type of form encoding, attached files etc.
 		std::unordered_map<std::string, std::string> m_arguments;
 	};

@@ -1,13 +1,14 @@
 #include "Job.h"
 #include "Scheduler.h"
-#include <algorithm>
-#include <Poco/JSON/Parser.h>
 #include "Poco/Logger.h"
+#include "Util.h"
 
 using Poco::Logger;
 
 namespace ozk 
 {
+	using vec_pairs = std::vector<std::pair<std::string, std::string>>;
+	using map = std::unordered_map<std::string, std::string>;
 
 	Job::Job(std::vector<std::string>& params)
 	{
@@ -21,7 +22,7 @@ namespace ozk
 
 		try 
 		{
-			this->m_query_params = this->ParseSQFArrayAsMap(params.at(1));
+			this->m_query_params = Poco::AnyCast<vec_pairs>(ParseSQFArray(params.at(1), ParseMode::Pairs));
 		}
 		catch (const std::out_of_range& oor) 
 		{
@@ -30,7 +31,7 @@ namespace ozk
 
 		try
 		{
-			this->m_arguments = this->ParseSQFArrayAsMap(params.at(2));
+			this->m_arguments = Poco::AnyCast<map>(ParseSQFArray(params.at(2), ParseMode::Map));
 		}
 		catch (const std::out_of_range& oor)
 		{
@@ -52,21 +53,6 @@ namespace ozk
 		return m_params;
 	}
 
-	std::unordered_map<std::string, std::string> Job::ParseSQFArrayAsMap(std::string& sqfArray) {
-
-		Poco::JSON::Parser parser;
-		auto parsedParamArray = parser.parse(sqfArray);
-		auto args = parsedParamArray.extract<Poco::JSON::Array::Ptr>();
-		std::unordered_map<std::string, std::string> result;
-		for (int i = 0; i < args->size(); ++i) {
-			auto param = args->get(i).extract<Poco::JSON::Array::Ptr>();
-			auto key = param->get(0).toString();
-			auto value = param->get(1).toString();
-			result.emplace(key, value);
-		}
-		return result;
-	}
-
 	void Job::Execute() {
 		Complete("null");
 	}
@@ -84,26 +70,6 @@ namespace ozk
 	{
 		m_result = result;
 		m_completed = true;
-	}
-
-	void Job::Trim(std::string& str)
-	{
-		//ye ye mutability is bad
-		//it just werks okay
-		str.erase(std::remove_if(str.begin(),
-			str.end(),
-			[](unsigned char x) {
-			switch (x)
-			{
-			case '\t':
-			case ' ':
-			case '\"':
-			case '\'':
-				return true;
-			default:
-				return false;
-			}
-		}), str.end());
 	}
 
 	std::string Job::GetURL()
