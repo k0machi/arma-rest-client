@@ -51,7 +51,7 @@ namespace ozk
 	}
 
 	Job* Worker::GetNextJob() {
-		if (m_cur_job = Scheduler::GetInstance()->GetJob()) {
+		if (m_cur_job = Scheduler::GetInstance()->AcquireJob()) {
 			return m_cur_job;
 		} else {
 			return nullptr;

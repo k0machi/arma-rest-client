@@ -9,6 +9,9 @@ namespace ozk
 	public:
 		explicit GETRequest(std::vector<std::string>& params);
 		virtual ~GETRequest();
+		/**
+		 * \brief Execute the GET request, await response and store the result
+		 */
 		void Execute() override;
 	};
 
