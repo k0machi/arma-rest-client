@@ -1,6 +1,7 @@
 #pragma once
 #include "Job.h"
 #include "NetRequest.h"
+#include "Util.h"
 
 namespace ozk
 {

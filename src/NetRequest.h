@@ -42,6 +42,8 @@ namespace ozk
 		 * \return 
 		 */
 		std::istream& GetResponseBody();
+	protected:
+		Poco::Net::HTTPResponse m_response{};
 	private:
 		bool m_ssl_init;
 		/**
@@ -65,7 +67,6 @@ namespace ozk
 		 */
 		std::string m_request_body;
 		Poco::Net::HTTPRequest m_request;
-		Poco::Net::HTTPResponse m_response{};
 		std::istream* m_response_body;
 	};
 

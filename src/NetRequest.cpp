@@ -1,5 +1,6 @@
 #include "NetRequest.h"
 #include "Poco/SharedPtr.h"
+#include "Poco/Logger.h"
 
 namespace ozk 
 {
