@@ -27,7 +27,7 @@ namespace ozk
 		}
 	}
 
-	Job* Scheduler::GetJob() {
+	Job* Scheduler::AcquireJob() {
 		std::unique_lock<std::mutex> lock(m_acquisition_lock, std::defer_lock);
 		lock.lock();
 		if (m_job_queue.empty()) return nullptr;
