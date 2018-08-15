@@ -1,16 +1,42 @@
 #include "Job.h"
 #include "Scheduler.h"
-#include <Poco/JSON/Parser.h>
+#include "Poco/Logger.h"
+#include "Util.h"
+
+using Poco::Logger;
 
 namespace ozk 
 {
+	using vec_pairs_t = std::vector<std::pair<std::string, std::string>>;
+	using map_t = std::unordered_map<std::string, std::string>;
 
 	Job::Job(std::vector<std::string>& params)
 	{
-		m_params = params;
 		m_id = -1;
 		m_result = "";
 		m_completed = false;
+
+		this->m_query_target = params[0];
+		Trim(this->m_query_target);
+
+		try 
+		{
+			this->m_query_params = Poco::AnyCast<vec_pairs_t>(ParseSQFArray(params.at(1), ParseMode::Pairs));
+		}
+		catch (const std::out_of_range& oor) 
+		{
+			Logger::get("FileLogger").warning("No query parameters supplied for %s", this->m_query_target);
+		}
+
+		try
+		{
+			this->m_query_arguments = Poco::AnyCast<map_t>(ParseSQFArray(params.at(2), ParseMode::Map));
+		}
+		catch (const std::out_of_range& oor)
+		{
+			Logger::get("FileLogger").warning("No arguments supplied for %s", this->m_query_target);
+		}
+
 	}
 
 	Job::~Job()
@@ -19,23 +45,6 @@ namespace ozk
 	std::string Job::GetResult()
 	{
 		return m_result;
-	}
-
-	std::vector<std::string>& Job::GetParams()
-	{
-		return m_params;
-	}
-
-
-	void Job::ParseSQFArrayAsMap(std::string& sqfArray) {
-
-		Poco::JSON::Parser parser;
-		auto parsedParamArray = parser.parse(sqfArray);
-		auto args = parsedParamArray.extract<Poco::JSON::Array::Ptr>();
-		for (int i = 0; i < args->size(); ++i) {
-			auto param = args->get(i).extract<Poco::JSON::Array::Ptr>();
-			m_parameter_map.emplace(param->get(0).toString(), param->get(1).toString());
-		}
 	}
 
 	void Job::Execute() {
@@ -55,6 +64,11 @@ namespace ozk
 	{
 		m_result = result;
 		m_completed = true;
+	}
+
+	std::string Job::GetURL()
+	{
+		return this->m_query_target;
 	}
 
 	bool Job::IsComplete() {

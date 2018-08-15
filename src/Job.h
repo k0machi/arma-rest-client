@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <utility>
 
 namespace ozk {
 	/**
@@ -42,28 +43,23 @@ namespace ozk {
 		 * \return true for complete, false for incomplete job
 		 */
 		bool IsComplete();
-		/**
-		 * \brief Parses arrays passed by Arma 3 callExtension RVExtensionArray() function
-		 * \param sqfArray array of strings to be parsed.
-		 */
-		void ParseSQFArrayAsMap(std::string& sqfArray);
 	protected:
 		/**
 		 * \brief Set completion flag of a job and the result
 		 * \param result Result of executing the job
 		 */
 		void Complete(const std::string& result);
+		std::string GetURL();
+		//uri itself, e.g. http://example.com/api/getname/
+		std::string m_query_target;
+		//any query parameters for urlencoding into URI, e.g. ?token=abcd&name=alice
+		std::vector<std::pair<std::string, std::string>> m_query_params;
+		//any other arguments for the request itself, like type of form encoding, attached files etc.
+		std::unordered_map<std::string, std::string> m_query_arguments;
 	private:
 		bool m_completed;
-		/**
-		 * \brief Parsed sqf array becomes this map
-		 */
 		std::unordered_map<std::string, std::string> m_parameter_map;
 		int m_id;
-		/**
-		 * \brief Raw job parameters
-		 */
-		std::vector<std::string> m_params;
 		/**
 		 * \brief Initial Request
 		 */

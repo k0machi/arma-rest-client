@@ -34,14 +34,15 @@
     <ClCompile Include="RVExtension.cpp" />
     <ClCompile Include="Scheduler.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Util.cpp" />
     <ClCompile Include="Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GetRequest.h" />
     <ClInclude Include="Job.h" />
-    <ClInclude Include="Logger.h" />
     <ClInclude Include="NetRequest.h" />
     <ClInclude Include="Scheduler.h" />
+    <ClInclude Include="Util.h" />
     <ClInclude Include="Worker.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

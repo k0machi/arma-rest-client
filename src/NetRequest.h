@@ -9,6 +9,10 @@
 #include <iostream>
 #include <map>
 
+using Poco::SharedPtr;
+using Poco::Net::HTTPSClientSession;
+using Poco::Net::HTTPClientSession;
+
 namespace ozk
 {
 	/**
@@ -27,10 +31,11 @@ namespace ozk
 		bool DoRequest();
 		void SetRequestBody(std::string& newBody);
 		void SetHeader(const std::string& key, const std::string& value);
+		void ApplyQueryParameters(const std::vector<std::pair<std::string, std::string>>&);
 		/**
 		 * \brief Returns the response
 		 * \return ref to HTTPResponse object
-		 */
+		 */		
 		const Poco::Net::HTTPResponse& GetResponse();
 		/**
 		 * \brief Returns body of the response
@@ -43,25 +48,12 @@ namespace ozk
 		 * \brief URL itself
 		 */
 		Poco::URI m_uri;
-		/**
-		 * \brief Remote Host
-		 */
-		std::string m_path;
-		/**
-		 * \brief Protocol in use
-		 */
-		std::string m_scheme;
+		std::string m_method;
 		/**
 		 * \brief Pointer to the currently active session
 		 */
-		Poco::Net::HTTPClientSession *m_session;
-		/**
-		 * \brief For plain HTTP requests
-		 */
+		std::shared_ptr<HTTPClientSession> m_session;
 		Poco::Net::HTTPClientSession m_http_session{};
-		/**
-		 * \brief For HTTP over TLS requests
-		 */
 		Poco::Net::HTTPSClientSession m_https_session{};
 		/**
 		 * \brief Location part of an URI

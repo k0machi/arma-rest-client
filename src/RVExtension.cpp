@@ -127,5 +127,16 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 			return 1;
 		}
 	}
+	if (func == "dump") {
+		std::ostringstream oss;
+		int element = 1;
+		for (auto i : vecArgs)
+		{
+			oss << "Element: " << element << ": @" << i << "@";
+			element++;
+		}
+		Logger::get("FileLogger").information(oss.str());
+
+	}
 	return CALL_E_GENERIC;
 }

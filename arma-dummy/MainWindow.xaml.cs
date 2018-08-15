@@ -30,7 +30,12 @@ namespace arma_dummy
         {
             StringBuilder output = new StringBuilder(10240);
             string func = argCall_func_name.Text;
-            string[] args = argCall_argv.Text.Split(new char[] { ',' });
+            // Arma 3 will send arrays of arrays as arrays of their textual representation, so splitting by , will also split those textual representations
+            // so as to simulate output from A3 we'll have to omit outmost brackets and separate arrays containing sub-arrays by some impossible separator like ,,
+            // "http://google.com",, [["token", "abcd"], ["name", "alice"], ["sort", "asc"] ],, [ ["encode", "urlencode"], ["something", "else"] ]
+            // is equal to
+            // ["http://google.com", [["token", "abcd"], ["name", "alice"], ["sort", "asc"] ], [ ["encode", "urlencode"], ["something", "else"] ]]
+            string[] args = argCall_argv.Text.Split(new string[] { ",," }, StringSplitOptions.None);
             ReturnCode.Text = (RVCommand.RVExtensionArgs(output, output.Capacity, func, args, args.Length)).ToString();
             ResultFld.Text = output.ToString();
         }
