@@ -25,7 +25,7 @@ namespace ozk
 			if (this->DoRequest())
 			{
 				bool parseJSON = false;
-				if (this->m_response.get("Content-Type") == "application/json")
+				if (this->m_response.get("Content-Type").find("application/json") != std::string::npos)
 					parseJSON = true;
 
 				std::stringstream os{};
