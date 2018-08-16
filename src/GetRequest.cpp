@@ -24,9 +24,22 @@ namespace ozk
 			this->ApplyQueryParameters(this->m_query_params);
 			if (this->DoRequest())
 			{
+				bool parseJSON = false;
+				if (this->m_response.get("Content-Type") == "application/json")
+					parseJSON = true;
+
 				std::stringstream os{};
 				Poco::StreamCopier::copyStream(this->GetResponseBody(), os);
-				Complete(os.str());
+
+				if (parseJSON)
+				{
+					std::string sqfied = ozk::StringifyJSONtoSQF(os.str());
+					Complete(sqfied);
+				}
+				else
+				{
+					Complete(os.str());
+				}
 			}
 			else
 			{
