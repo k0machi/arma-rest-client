@@ -27,6 +27,7 @@ std::vector<ozk::Worker*> g_ExtensionWorkers;
 const int gc_numWorkers = 3;
 const char gc_version[] = "1.0.0.0";
 const char gc_deprecatedInterfaceMessage[] = "Usage of RVExtension interface is not supported, please use callExtension array syntax";
+extern const char* g_pszModuleFilename;
 
 enum StatusCodes
 {
@@ -51,8 +52,10 @@ void InitializeWorkers() {
 }
 
 void InitializeLogging() {
+	std::stringstream filePath;
+	filePath << g_pszModuleFilename << "\\rest-client.log";
 	FormattingChannel* pFCFile = new FormattingChannel(new PatternFormatter("%Y-%m-%d %H:%M:%S.%c %N[%P]:%s:%q:%t"));
-	pFCFile->setChannel(new FileChannel("rest-client.log"));
+	pFCFile->setChannel(new FileChannel(filePath.str()));
 	pFCFile->open();
 
 	Logger& fileLogger = Logger::create("FileLogger", pFCFile, Message::PRIO_INFORMATION);

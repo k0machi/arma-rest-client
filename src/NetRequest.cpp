@@ -1,6 +1,7 @@
 #include "NetRequest.h"
 #include "Poco/SharedPtr.h"
 #include "Poco/Logger.h"
+extern const char* g_pszModuleFilename;
 
 namespace ozk 
 {
@@ -43,7 +44,9 @@ namespace ozk
 
 		if (m_ssl_init) {
 			Poco::SharedPtr<Poco::Net::InvalidCertificateHandler> pCertHandler = new DummyInvalidCertificateHandler(false); // ask the user via console
-			Poco::Net::Context::Ptr ptrContext = new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", "rootcert.pem", Poco::Net::Context::VERIFY_RELAXED, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
+			std::stringstream rootCertPath;
+			rootCertPath << g_pszModuleFilename << "\\rootcert.pem";
+			Poco::Net::Context::Ptr ptrContext = new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", rootCertPath.str(), Poco::Net::Context::VERIFY_RELAXED, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
 			Poco::Net::SSLManager::instance().initializeClient(0, pCertHandler, ptrContext);
 		}
 
