@@ -45,7 +45,9 @@ void InitializeWorkers() {
 		{
 			g_ExtensionWorkers.push_back(new ozk::Worker());
 		}
+		Logger::get("FileLogger").information("Finished initializing worker threads");
 	}
+
 }
 
 void InitializeLogging() {
@@ -54,6 +56,7 @@ void InitializeLogging() {
 	pFCFile->open();
 
 	Logger& fileLogger = Logger::create("FileLogger", pFCFile, Message::PRIO_INFORMATION);
+	Logger::get("FileLogger").information("Logging Initialized");
 }
 
 extern "C"

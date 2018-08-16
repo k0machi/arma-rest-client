@@ -36,6 +36,7 @@ namespace ozk
 	}
 
 	void Worker::WorkLoop() {
+		Logger::get("FileLogger").information("Worker thread ready");
 		while (!ShouldExit()) {
 			using namespace std::chrono_literals;
 			if (!m_cur_job) {
