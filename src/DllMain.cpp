@@ -5,8 +5,9 @@
 #include "Worker.h"
 
 
-static const size_t gc_cbszModuleFilename = 512;
-
+const size_t gc_cbszModuleFilename = 512;
+char g_szModuleFilename[gc_cbszModuleFilename];
+const char* g_pszModuleFilename = g_szModuleFilename;
 extern std::vector<ozk::Worker*> g_ExtensionWorkers; //Defined in RVExtension.cpp
 
 BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD reason, LPVOID reserved) {
@@ -15,8 +16,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD reason, LPVOID reserved) {
 	case DLL_THREAD_DETACH: break;
 	case DLL_PROCESS_ATTACH:
 	{
-		char szModuleFilename[gc_cbszModuleFilename];
-		const LPSTR pszModuleFilename = szModuleFilename;
+		const LPSTR pszModuleFilename = g_szModuleFilename;
 		auto cbszLength = GetModuleFileName(static_cast<HMODULE>(hInstance), pszModuleFilename, gc_cbszModuleFilename);
 		auto bSuccRemove = PathRemoveFileSpec(pszModuleFilename);
 		if (bSuccRemove) {
