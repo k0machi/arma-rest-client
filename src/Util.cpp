@@ -99,7 +99,7 @@ void ozk::SQFier::stringify(const Var& any, std::ostringstream& out)
 
 void ozk::SQFier::stringifyObj(const Poco::JSON::Object::Ptr& o, std::ostringstream& out)
 {
-	out << "[\"o\", [";
+	out << "[\"o\",[";
 
 	Poco::JSON::Object::ConstIterator it = o->begin();
 	Poco::JSON::Object::ConstIterator end = o->end();
