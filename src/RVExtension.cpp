@@ -31,10 +31,14 @@ extern const char* g_pszModuleFilename;
 
 enum StatusCodes
 {
-	CALL_OK = 0,
-	JOB_COMPLETE = 0,
-	JOB_INCOMPLETE = 1,
-	CALL_E_GENERIC = 0xff
+	CALL_SUCCESS = 0x0,
+	CALL_E_GENERIC = 0x0f,
+	JOB_COMPLETE = 0x10,
+	JOB_INCOMPLETE = 0x11,
+	RESULT_COMPLETE = 0x20,
+	RESULT_SLICED = 0x22,
+	RESULT_NOTREADY = 0x2f,
+	DEBUG_INFO_DUMP = 0xff
 };
 
 /**
@@ -128,9 +132,9 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 		ozk::Job* completedJob;
 		if ((completedJob = ozk::Scheduler::GetInstance()->GetCompletedJob(id))) {
 			strcpy_s(output, outputSize, completedJob->GetResult().c_str());
-			return 0;
+			return RESULT_COMPLETE;
 		} else {
-			return 1;
+			return RESULT_NOTREADY;
 		}
 	}
 	if (func == "dump") {
@@ -142,7 +146,7 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 			element++;
 		}
 		Logger::get("FileLogger").information(oss.str());
-
+		return DEBUG_INFO_DUMP;
 	}
 	return CALL_E_GENERIC;
 }
