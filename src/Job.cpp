@@ -15,7 +15,7 @@ namespace ozk
 		m_id = -1;
 		m_result = "";
 		m_completed = false;
-
+		m_result_offset = 0;
 		this->m_query_target = params[0];
 		Trim(this->m_query_target);
 
@@ -73,5 +73,17 @@ namespace ozk
 
 	bool Job::IsComplete() {
 		return m_completed;
+	}
+
+	int Job::GetResultOffset() {
+		return m_result_offset;
+	}
+
+	void Job::UpdateResultOffset(int newOffset) {
+		m_result_offset += newOffset;
+	}
+
+	void Job::ResetResultOffset() {
+		m_result_offset = 0;
 	}
 }

@@ -131,11 +131,28 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 		auto id = std::stoi(vecArgs[0]);
 		ozk::Job* completedJob;
 		if ((completedJob = ozk::Scheduler::GetInstance()->GetCompletedJob(id))) {
-			strcpy_s(output, outputSize, completedJob->GetResult().c_str());
-			return RESULT_COMPLETE;
-		} else {
-			return RESULT_NOTREADY;
+
+			auto result = completedJob->GetResult();
+
+			const auto totalBytes = result.size();
+
+			if (totalBytes < outputSize) {
+				strcpy_s(output, outputSize, result.c_str());
+				return RESULT_COMPLETE;
+			}
+
+			auto bytesRemaining = totalBytes - completedJob->GetResultOffset();
+			if (bytesRemaining < outputSize) {
+				strcpy_s(output, outputSize, result.substr(completedJob->GetResultOffset(), std::string::npos).c_str());
+				completedJob->ResetResultOffset();
+				return RESULT_COMPLETE;
+			}
+
+			strcpy_s(output, outputSize, result.substr(completedJob->GetResultOffset(), (outputSize - 1)).c_str());
+			completedJob->UpdateResultOffset(outputSize - 1);
+			return RESULT_SLICED;
 		}
+		return RESULT_NOTREADY;
 	}
 	if (func == "dump") {
 		std::ostringstream oss;

@@ -43,6 +43,17 @@ namespace ozk {
 		 * \return true for complete, false for incomplete job
 		 */
 		bool IsComplete();
+		/**
+		 * \brief Return offset number of result string. Used for handling large results.
+		 * \return 
+		 */
+		int GetResultOffset();
+		/**
+		 * \brief Update result's offset to a new value. Returns new value
+		 * \param newOffset new offset
+		 */
+		void UpdateResultOffset(int newOffset);
+		void ResetResultOffset();
 	protected:
 		/**
 		 * \brief Set completion flag of a job and the result
@@ -57,6 +68,7 @@ namespace ozk {
 		//any other arguments for the request itself, like type of form encoding, attached files etc.
 		std::unordered_map<std::string, std::string> m_query_arguments;
 	private:
+		int m_result_offset;
 		bool m_completed;
 		std::unordered_map<std::string, std::string> m_parameter_map;
 		int m_id;
