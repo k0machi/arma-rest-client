@@ -122,13 +122,13 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 	std::vector<std::string> vecArgs(args, std::next(args, argsCnt)); //use <algorithm> to convert C Style array arguments into std::string vector
 	if (func == "GETRequest") {
 		auto job = new ozk::GETRequest(vecArgs);
-		auto id = ozk::Scheduler::GetInstance()->AddJob(job);
+		auto id = ozk::Scheduler::GetInstance().AddJob(job);
 		Logger::get("FileLogger").information("Added new GETRequest to queue, id: %d", id);
 		return id;
 	} 
 	if (func == "CheckJob") {
 		auto id = std::stoi(vecArgs[0]); //TODO: Sanitization
-		if (ozk::Scheduler::GetInstance()->GetCompletedJob(id)) {
+		if (ozk::Scheduler::GetInstance().GetCompletedJob(id)) {
 			return JOB_COMPLETE;
 		} else {
 			return JOB_INCOMPLETE;
@@ -137,7 +137,7 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 	if (func == "GetResult") {
 		auto id = std::stoi(vecArgs[0]);
 		ozk::Job* completedJob;
-		if ((completedJob = ozk::Scheduler::GetInstance()->GetCompletedJob(id))) {
+		if ((completedJob = ozk::Scheduler::GetInstance().GetCompletedJob(id))) {
 
 			auto result = completedJob->GetResult();
 

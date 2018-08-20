@@ -52,7 +52,7 @@ namespace ozk
 	}
 
 	Job* Worker::GetNextJob() {
-		if (m_cur_job = Scheduler::GetInstance()->AcquireJob()) {
+		if (m_cur_job = Scheduler::GetInstance().AcquireJob()) {
 			return m_cur_job;
 		} else {
 			return nullptr;
@@ -61,7 +61,7 @@ namespace ozk
 
 	void Worker::CompleteJob() {
 		Logger::get("FileLogger").information("Worker completed job id %d", m_cur_job->GetId());
-		Scheduler::GetInstance()->CompleteJob(*m_cur_job);
+		Scheduler::GetInstance().CompleteJob(*m_cur_job);
 		m_cur_job = nullptr;
 	}
 }
