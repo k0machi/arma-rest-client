@@ -8,7 +8,7 @@
 const size_t gc_cbszModuleFilename = 512;
 char g_szModuleFilename[gc_cbszModuleFilename];
 const char* g_pszModuleFilename = g_szModuleFilename;
-extern std::vector<ozk::Worker*> g_ExtensionWorkers; //Defined in RVExtension.cpp
+extern std::vector<std::unique_ptr<ozk::Worker>> g_ExtensionWorkers; //Defined in RVExtension.cpp
 
 BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD reason, LPVOID reserved) {
 	switch (reason) {
@@ -26,10 +26,10 @@ BOOL WINAPI DllMain(HINSTANCE hInstance, DWORD reason, LPVOID reserved) {
 	}
 	case DLL_PROCESS_DETACH:
 	{	//Terminate Extension's Worker Threads on Detach. Happens on closing the game.
-		for (auto && worker : g_ExtensionWorkers) {
+		/*for (auto && worker : g_ExtensionWorkers) {
 			worker->Terminate();
 		}
-		break;
+		break;*/
 	}
 	default: break;
 	}

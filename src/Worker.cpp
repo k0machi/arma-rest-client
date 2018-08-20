@@ -12,15 +12,15 @@ namespace ozk
 	{
 		m_terminate = false;
 		m_cur_job = nullptr;
-		m_thread = new std::thread(&Worker::WorkLoop, this);
+		m_thread = std::make_unique<std::thread>(&Worker::WorkLoop, this);
 	}
 
 
 	Worker::~Worker()
 	{
 		this->Terminate();
-		m_thread->join();
-		delete m_thread;
+		if(m_thread->joinable())
+			m_thread->join();
 	}
 
 	bool Worker::Active() {

@@ -18,7 +18,7 @@ using Poco::FormattingChannel;
 using Poco::FileChannel;
 using Poco::Message;
 
-std::vector<ozk::Worker*> g_ExtensionWorkers;
+std::vector<std::unique_ptr<ozk::Worker>> g_ExtensionWorkers;
 
 /**
  * \brief Amount of worker threads to create
@@ -48,7 +48,7 @@ void InitializeWorkers() {
 	if (g_ExtensionWorkers.size() != gc_numWorkers) {
 		for (size_t i = 0; i < gc_numWorkers; i++)
 		{
-			g_ExtensionWorkers.push_back(new ozk::Worker());
+			g_ExtensionWorkers.push_back(std::make_unique<ozk::Worker>());
 		}
 		Logger::get("FileLogger").information("Finished initializing worker threads");
 	}

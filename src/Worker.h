@@ -11,6 +11,7 @@ namespace ozk
 	{
 	public:
 		Worker();
+		Worker(Worker&&) = default;
 		~Worker();
 		/**
 		 * \brief Worker thread status
@@ -43,7 +44,7 @@ namespace ozk
 		/**
 		 * \brief The thread
 		 */
-		std::thread* m_thread{};
+		std::unique_ptr<std::thread> m_thread;
 		/**
 		 * \brief Job that is currently being executed
 		 */
