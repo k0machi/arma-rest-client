@@ -64,9 +64,9 @@ namespace ozk {
 		//uri itself, e.g. http://example.com/api/getname/
 		std::string m_query_target;
 		//any query parameters for urlencoding into URI, e.g. ?token=abcd&name=alice
-		std::vector<std::pair<std::string, std::string>> m_query_params;
+		std::vector<std::pair<std::string, std::string>> m_query_params {};
 		//any other arguments for the request itself, like type of form encoding, attached files etc.
-		std::unordered_map<std::string, std::string> m_query_arguments;
+		std::unordered_map<std::string, std::string> m_query_arguments {};
 	private:
 		int m_result_offset;
 		bool m_completed;
