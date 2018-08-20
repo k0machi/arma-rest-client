@@ -83,8 +83,15 @@ extern "C"
  */
 void RVExtensionVersion(char * output, int outputSize)
 {
-	InitializeLogging();
-	InitializeWorkers();
+	try
+	{
+		InitializeLogging();
+		InitializeWorkers();
+	}
+	catch (const std::exception& e)
+	{
+		Logger::get("FileLogger").error("Exception thrown during init: %s", e.what());
+	}
 
 	strcpy_s(output, outputSize, gc_version);
 }
