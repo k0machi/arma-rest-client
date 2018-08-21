@@ -38,6 +38,7 @@ enum StatusCodes
 	RESULT_COMPLETE = 0x20,
 	RESULT_SLICED = 0x22,
 	RESULT_NOTREADY = 0x2f,
+	RESULT_INVALIDINPUT = 0x30,
 	DEBUG_INFO_DUMP = 0xff
 };
 
@@ -127,7 +128,16 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 		return id;
 	} 
 	if (func == "CheckJob") {
-		auto id = std::stoi(vecArgs[0]); //TODO: Sanitization
+		int id;
+		try
+		{
+			id = std::stoi(vecArgs[0]);
+		}
+		catch (std::exception& e)
+		{
+			(void)e; //warning suppression
+			return RESULT_INVALIDINPUT;
+		}
 		if (ozk::Scheduler::GetInstance().GetCompletedJob(id)) {
 			return JOB_COMPLETE;
 		} else {
@@ -135,7 +145,16 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 		}
 	}
 	if (func == "GetResult") {
-		auto id = std::stoi(vecArgs[0]);
+		int id;
+		try
+		{
+			id = std::stoi(vecArgs[0]);
+		}
+		catch (std::exception& e)
+		{
+			(void)e;
+			return RESULT_INVALIDINPUT;
+		}
 		ozk::Job* completedJob;
 		if ((completedJob = ozk::Scheduler::GetInstance().GetCompletedJob(id))) {
 

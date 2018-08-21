@@ -20,7 +20,13 @@ namespace ozk
 	}
 
 	void GETRequest::Execute() {
-		try {
+		if (!this->IsValid())
+		{
+			this->m_completed = true;
+			return;
+		}
+		try 
+		{
 			this->ApplyQueryParameters(this->m_query_params);
 			if (this->DoRequest())
 			{

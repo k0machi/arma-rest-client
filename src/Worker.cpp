@@ -42,7 +42,8 @@ namespace ozk
 			if (!m_cur_job) {
 				if (GetNextJob()) {
 					m_cur_job->Execute();
-					if (m_cur_job->IsComplete()) CompleteJob(); //Non-threaded job completion check
+					if (m_cur_job->IsComplete())
+						CompleteJob(); //Non-threaded job completion check
 				}
 			} else if (m_cur_job->IsComplete()) { //Threaded job completion check
 				CompleteJob();

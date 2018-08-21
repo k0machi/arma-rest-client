@@ -26,6 +26,20 @@ namespace ozk
 		catch (const std::out_of_range& oor)
 		{
 			this->m_query_target = "";
+			this->m_valid = false;
+			this->m_result = "Missing valid URL as a first parameter";
+		}
+		catch (const std::exception& e)
+		{
+			this->m_query_target = "";
+			this->m_valid = false;
+			this->m_result = e.what();
+		}
+
+		if (this->m_query_target.length() < 3)
+		{
+			this->m_valid = false;
+			this->m_result = "URL too short";
 		}
 
 		try 
@@ -102,5 +116,10 @@ namespace ozk
 
 	void Job::ResetResultOffset() {
 		m_result_offset = 0;
+	}
+
+	bool Job::IsValid()
+	{
+		return this->m_valid;
 	}
 }
