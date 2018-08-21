@@ -2,16 +2,10 @@
 
 namespace ozk 
 {
-	Scheduler* Scheduler::m_instance;
-	std::mutex Scheduler::m_instance_lock;
-
-	Scheduler* Scheduler::GetInstance() {
-		std::unique_lock<std::mutex> lockInstance(m_instance_lock, std::defer_lock);
-		lockInstance.lock();
-		if (m_instance == nullptr) {
-			m_instance = new Scheduler();
-		}
-		return m_instance;
+	
+	Scheduler& Scheduler::GetInstance() {
+		static Scheduler s;
+		return s;
 	}
 
 	int Scheduler::GetNewId() {

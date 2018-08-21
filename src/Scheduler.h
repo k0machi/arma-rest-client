@@ -17,7 +17,7 @@ namespace ozk {
 		 * \brief Since this is a singleton class
 		 * \return The Scheduler Instance 
 		 */
-		static Scheduler* GetInstance();
+		static Scheduler& GetInstance();
 		/**
 		 * \brief Request new scheduler id
 		 * \return 
@@ -52,14 +52,6 @@ namespace ozk {
 		 */
 		bool Dispose(Job* job);
 	private:
-		/**
-		 * \brief Pointer to instance object
-		 */
-		static Scheduler* m_instance;
-		/**
-		 * \brief Lock for getting instance
-		 */
-		static std::mutex m_instance_lock;
 		/**
 		 * \brief Lock for depositing completed jobs
 		 */

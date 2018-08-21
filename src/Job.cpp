@@ -12,12 +12,35 @@ namespace ozk
 
 	Job::Job(std::vector<std::string>& params)
 	{
+		Logger& log = Logger::get("FileLogger");
 		m_id = -1;
 		m_result = "";
 		m_completed = false;
 		m_result_offset = 0;
-		this->m_query_target = params[0];
-		Trim(this->m_query_target);
+		this->m_query_target = "";
+		try
+		{
+			this->m_query_target = params.at(0);
+			Trim(this->m_query_target);
+		}
+		catch (const std::out_of_range& oor)
+		{
+			this->m_query_target = "";
+			this->m_valid = false;
+			this->m_result = "Missing valid URL as a first parameter";
+		}
+		catch (const std::exception& e)
+		{
+			this->m_query_target = "";
+			this->m_valid = false;
+			this->m_result = e.what();
+		}
+
+		if (this->m_query_target.length() < 3)
+		{
+			this->m_valid = false;
+			this->m_result = "URL too short";
+		}
 
 		try 
 		{
@@ -25,7 +48,11 @@ namespace ozk
 		}
 		catch (const std::out_of_range& oor) 
 		{
-			Logger::get("FileLogger").warning("No query parameters supplied for %s", this->m_query_target);
+			log.warning("No query parameters supplied for %s", this->m_query_target);
+		}
+		catch (const std::exception& e)
+		{
+			log.warning("Error parsing query params for %s : ", this->m_query_target, e.what());
 		}
 
 		try
@@ -34,7 +61,11 @@ namespace ozk
 		}
 		catch (const std::out_of_range& oor)
 		{
-			Logger::get("FileLogger").warning("No arguments supplied for %s", this->m_query_target);
+			log.warning("No arguments supplied for %s", this->m_query_target);
+		}
+		catch (const std::exception& e)
+		{
+			log.warning("Error parsing query arguments for %s : ", this->m_query_target, e.what());
 		}
 
 	}
@@ -85,5 +116,10 @@ namespace ozk
 
 	void Job::ResetResultOffset() {
 		m_result_offset = 0;
+	}
+
+	bool Job::IsValid()
+	{
+		return this->m_valid;
 	}
 }

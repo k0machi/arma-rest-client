@@ -13,9 +13,9 @@ bool gCheckJobs() {
 	bool jobsLeft = false;
 	for (auto i = g_jobs.begin(); i != g_jobs.end(); ++i) {
 		ozk::Job* job;
-		if (job = ozk::Scheduler::GetInstance()->GetCompletedJob(*i)) {
+		if (job = ozk::Scheduler::GetInstance().GetCompletedJob(*i)) {
 			std::cout << "Result for id #" << *i << ": " << job->GetResult() << std::endl;
-			ozk::Scheduler::GetInstance()->Dispose(job);
+			ozk::Scheduler::GetInstance().Dispose(job);
 		} else {
 			jobsLeft = true;
 		}
@@ -29,7 +29,7 @@ int main() {
 		g_workers.push_back(worker);
 	}
 	//for (int i = 0; i < 100; i++) {
-	auto id = ozk::Scheduler::GetInstance()->AddJob(new ozk::GETRequest(*new std::vector<std::string>{"https://example.org/", "GET", "[[\"Content-Type\",\"x-www-form-urlencoded\"]]", "[]" }));
+	auto id = ozk::Scheduler::GetInstance().AddJob(new ozk::GETRequest(*new std::vector<std::string>{"https://example.org/", "GET", "[[\"Content-Type\",\"x-www-form-urlencoded\"]]", "[]" }));
 		g_jobs.push_back(id);
 	//}
 	std::cout << "Waiting for jobs to complete..." << std::endl;

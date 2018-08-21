@@ -20,11 +20,6 @@ namespace ozk {
 		 */
 		std::string GetResult();
 		/**
-		 * \brief Get Job Params
-		 * \return Array of strings containing all parameters for a job
-		 */
-		std::vector<std::string>& GetParams();
-		/**
 		 * \brief Execute the job. Can itself be an async operation
 		 */
 		virtual void Execute();
@@ -54,6 +49,11 @@ namespace ozk {
 		 */
 		void UpdateResultOffset(int newOffset);
 		void ResetResultOffset();
+		/*
+		* \brief If there were exceptions caught during processing of this job, this will return false
+		* \return bool
+		*/
+		bool IsValid();
 	protected:
 		/**
 		 * \brief Set completion flag of a job and the result
@@ -64,22 +64,23 @@ namespace ozk {
 		//uri itself, e.g. http://example.com/api/getname/
 		std::string m_query_target;
 		//any query parameters for urlencoding into URI, e.g. ?token=abcd&name=alice
-		std::vector<std::pair<std::string, std::string>> m_query_params;
+		std::vector<std::pair<std::string, std::string>> m_query_params {};
 		//any other arguments for the request itself, like type of form encoding, attached files etc.
-		std::unordered_map<std::string, std::string> m_query_arguments;
+		std::unordered_map<std::string, std::string> m_query_arguments {};
+		/**
+		* \brief Job result
+		*/
+		std::string m_result;
+		bool m_completed;
+		bool m_valid{ true };
 	private:
 		int m_result_offset;
-		bool m_completed;
 		std::unordered_map<std::string, std::string> m_parameter_map;
 		int m_id;
 		/**
 		 * \brief Initial Request
 		 */
 		std::string m_req;
-		/**
-		 * \brief Job result
-		 */
-		std::string m_result;
 	};
 
 }

@@ -18,7 +18,7 @@ using Poco::FormattingChannel;
 using Poco::FileChannel;
 using Poco::Message;
 
-std::vector<ozk::Worker*> g_ExtensionWorkers;
+std::vector<std::unique_ptr<ozk::Worker>> g_ExtensionWorkers;
 
 /**
  * \brief Amount of worker threads to create
@@ -38,6 +38,7 @@ enum StatusCodes
 	RESULT_COMPLETE = 0x20,
 	RESULT_SLICED = 0x22,
 	RESULT_NOTREADY = 0x2f,
+	RESULT_INVALIDINPUT = 0x30,
 	DEBUG_INFO_DUMP = 0xff
 };
 
@@ -48,7 +49,7 @@ void InitializeWorkers() {
 	if (g_ExtensionWorkers.size() != gc_numWorkers) {
 		for (size_t i = 0; i < gc_numWorkers; i++)
 		{
-			g_ExtensionWorkers.push_back(new ozk::Worker());
+			g_ExtensionWorkers.push_back(std::make_unique<ozk::Worker>());
 		}
 		Logger::get("FileLogger").information("Finished initializing worker threads");
 	}
@@ -83,8 +84,15 @@ extern "C"
  */
 void RVExtensionVersion(char * output, int outputSize)
 {
-	InitializeLogging();
-	InitializeWorkers();
+	try
+	{
+		InitializeLogging();
+		InitializeWorkers();
+	}
+	catch (const std::exception& e)
+	{
+		Logger::get("FileLogger").error("Exception thrown during init: %s", e.what());
+	}
 
 	strcpy_s(output, outputSize, gc_version);
 }
@@ -115,22 +123,40 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 	std::vector<std::string> vecArgs(args, std::next(args, argsCnt)); //use <algorithm> to convert C Style array arguments into std::string vector
 	if (func == "GETRequest") {
 		auto job = new ozk::GETRequest(vecArgs);
-		auto id = ozk::Scheduler::GetInstance()->AddJob(job);
+		auto id = ozk::Scheduler::GetInstance().AddJob(job);
 		Logger::get("FileLogger").information("Added new GETRequest to queue, id: %d", id);
 		return id;
 	} 
 	if (func == "CheckJob") {
-		auto id = std::stoi(vecArgs[0]); //TODO: Sanitization
-		if (ozk::Scheduler::GetInstance()->GetCompletedJob(id)) {
+		int id;
+		try
+		{
+			id = std::stoi(vecArgs[0]);
+		}
+		catch (std::exception& e)
+		{
+			(void)e; //warning suppression
+			return RESULT_INVALIDINPUT;
+		}
+		if (ozk::Scheduler::GetInstance().GetCompletedJob(id)) {
 			return JOB_COMPLETE;
 		} else {
 			return JOB_INCOMPLETE;
 		}
 	}
 	if (func == "GetResult") {
-		auto id = std::stoi(vecArgs[0]);
+		int id;
+		try
+		{
+			id = std::stoi(vecArgs[0]);
+		}
+		catch (std::exception& e)
+		{
+			(void)e;
+			return RESULT_INVALIDINPUT;
+		}
 		ozk::Job* completedJob;
-		if ((completedJob = ozk::Scheduler::GetInstance()->GetCompletedJob(id))) {
+		if ((completedJob = ozk::Scheduler::GetInstance().GetCompletedJob(id))) {
 
 			auto result = completedJob->GetResult();
 
