@@ -5,7 +5,7 @@
 
 namespace ozk
 {
-	class GETRequest : public Job, public NetRequest
+	class GETRequest : public Job
 	{
 	public:
 		explicit GETRequest(std::vector<std::string>& params);

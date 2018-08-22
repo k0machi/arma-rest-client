@@ -8,8 +8,7 @@ namespace ozk
 
 
 	GETRequest::GETRequest(std::vector<std::string>& params): 
-		Job(params), 
-		NetRequest(GetURL(), Poco::Net::HTTPRequest::HTTP_GET) 
+		Job(params)
 	{
 		
 	}
@@ -27,15 +26,16 @@ namespace ozk
 		}
 		try 
 		{
-			this->ApplyQueryParameters(this->m_query_params);
-			if (this->DoRequest())
+			ozk::NetRequest netRequest(this->GetURL(), Poco::Net::HTTPRequest::HTTP_GET);
+			netRequest.ApplyQueryParameters(this->m_query_params);
+			if (netRequest.DoRequest())
 			{
 				bool parseJSON = false;
-				if (this->m_response.get("Content-Type").find("application/json") != std::string::npos)
+				if (netRequest.GetResponse().get("Content-Type").find("application/json") != std::string::npos)
 					parseJSON = true;
 
 				std::stringstream os{};
-				Poco::StreamCopier::copyStream(this->GetResponseBody(), os);
+				Poco::StreamCopier::copyStream(netRequest.GetResponseBody(), os);
 
 				if (parseJSON)
 				{

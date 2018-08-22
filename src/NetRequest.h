@@ -27,7 +27,7 @@ namespace ozk
 	public:
 		NetRequest();
 		explicit NetRequest(const std::string& uri, const std::string& method);
-		virtual ~NetRequest();
+		~NetRequest();
 		bool DoRequest();
 		void SetRequestBody(std::string& newBody);
 		void SetHeader(const std::string& key, const std::string& value);
