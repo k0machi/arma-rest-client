@@ -16,10 +16,6 @@ using Poco::Net::HTTPClientSession;
 namespace ozk
 {
 	/**
-	 * \brief Request body parameters
-	 */
-	typedef std::map<std::string, std::string> Headers_t;
-	/**
 	 * \brief Submits a request to a remote host and stores it
 	 */
 	class NetRequest
@@ -28,20 +24,14 @@ namespace ozk
 		NetRequest();
 		explicit NetRequest(const std::string& uri, const std::string& method);
 		~NetRequest();
-		bool DoRequest();
+		std::string DoRequest();
 		void SetRequestBody(std::string& newBody);
-		void SetHeader(const std::string& key, const std::string& value);
 		void ApplyQueryParameters(const std::vector<std::pair<std::string, std::string>>&);
 		/**
 		 * \brief Returns the response
 		 * \return ref to HTTPResponse object
 		 */		
 		const Poco::Net::HTTPResponse& GetResponse();
-		/**
-		 * \brief Returns body of the response
-		 * \return 
-		 */
-		std::istream& GetResponseBody();
 	protected:
 		Poco::Net::HTTPResponse m_response{};
 	private:
@@ -61,13 +51,12 @@ namespace ozk
 		 * \brief Location part of an URI
 		 */
 		std::string m_location_path;
-		Headers_t m_headers{};
 		/**
 		 * \brief Body of the request
 		 */
 		std::string m_request_body;
 		Poco::Net::HTTPRequest m_request;
-		std::istream* m_response_body;
+		std::string m_response_body;
 	};
 
 

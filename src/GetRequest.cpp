@@ -1,5 +1,4 @@
 #include "GetRequest.h"
-#include "Poco/StreamCopier.h"
 #include "Poco/Exception.h"
 #include <sstream>
 
@@ -28,33 +27,28 @@ namespace ozk
 		{
 			ozk::NetRequest netRequest(this->GetURL(), Poco::Net::HTTPRequest::HTTP_GET);
 			netRequest.ApplyQueryParameters(this->m_query_params);
-			if (netRequest.DoRequest())
+			std::string result = netRequest.DoRequest();
+			bool parseJSON = false;
+			if (netRequest.GetResponse().get("Content-Type").find("application/json") != std::string::npos)
+				parseJSON = true;
+
+			if (parseJSON)
 			{
-				bool parseJSON = false;
-				if (netRequest.GetResponse().get("Content-Type").find("application/json") != std::string::npos)
-					parseJSON = true;
-
-				std::stringstream os{};
-				Poco::StreamCopier::copyStream(netRequest.GetResponseBody(), os);
-
-				if (parseJSON)
-				{
-					std::string sqfied = ozk::StringifyJSONtoSQF(os.str());
-					Complete(sqfied);
-				}
-				else
-				{
-					Complete(os.str());
-				}
+				std::string sqfied = ozk::StringifyJSONtoSQF(result);
+				Complete(sqfied);
 			}
 			else
 			{
-				Complete("E_HTTP: 401 Unauthorized");
+				Complete(result);
 			}
 		}
 		catch (Poco::Exception& exc)
 		{
 			Complete(exc.className() + exc.displayText());
+		}
+		catch (std::exception& e)
+		{
+			Complete(e.what());
 		}
 	}
 }
