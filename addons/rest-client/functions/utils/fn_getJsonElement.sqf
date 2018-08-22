@@ -71,5 +71,4 @@ if (_errno != -1) exitWith {
 	_errmsg;
 };
 
-hint _errmsg;
 _finalNode;

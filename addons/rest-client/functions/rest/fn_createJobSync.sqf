@@ -25,7 +25,7 @@ _clientResult = "extension" callExtension ["GetResult", [_id]];
 _result = _clientResult#0;
 if ((_clientResult#1) == RESULT_SLICED) then {
 	while { (_clientResult#1) != RESULT_COMPLETE } do {
-		_clientResult = "extension" callExtension ["GetResult", [(_curJob#0)]];
+		_clientResult = "extension" callExtension ["GetResult", [_id]];
 		_result = _result + (_clientResult#0);
 	};
 };
