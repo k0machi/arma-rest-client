@@ -40,6 +40,11 @@ namespace ozk
 				{
 					this->m_ssl_init = true;
 					Poco::Net::initializeSSL();
+					Poco::SharedPtr<Poco::Net::InvalidCertificateHandler> pCertHandler = new DummyInvalidCertificateHandler(false); // ask the user via console
+					std::stringstream rootCertPath;
+					rootCertPath << g_pszModuleFilename << "\\rootcert.pem";
+					Poco::Net::Context::Ptr ptrContext = new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", rootCertPath.str(), Poco::Net::Context::VERIFY_RELAXED, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
+					Poco::Net::SSLManager::instance().initializeClient(0, pCertHandler, ptrContext);
 				}
 				this->m_session = std::make_shared<HTTPSClientSession>();
 			}
@@ -55,15 +60,6 @@ namespace ozk
 			if (path.empty())
 				path = "/";
 			Poco::Net::HTTPRequest request(this->m_method, path, Poco::Net::HTTPRequest::HTTP_1_1);
-
-			if (m_ssl_init)
-			{
-				Poco::SharedPtr<Poco::Net::InvalidCertificateHandler> pCertHandler = new DummyInvalidCertificateHandler(false); // ask the user via console
-				std::stringstream rootCertPath;
-				rootCertPath << g_pszModuleFilename << "\\rootcert.pem";
-				Poco::Net::Context::Ptr ptrContext = new Poco::Net::Context(Poco::Net::Context::CLIENT_USE, "", "", rootCertPath.str(), Poco::Net::Context::VERIFY_RELAXED, 9, false, "ALL:!ADH:!LOW:!EXP:!MD5:@STRENGTH");
-				Poco::Net::SSLManager::instance().initializeClient(0, pCertHandler, ptrContext);
-			}
 
 			std::ostream& requestStream = m_session->sendRequest(request);
 			requestStream << m_request_body;
