@@ -25,7 +25,7 @@ std::vector<std::unique_ptr<ozk::Worker>> g_ExtensionWorkers;
  * TODO: Move to a config file
  */
 const int gc_numWorkers = 3;
-const char gc_version[] = "1.0.0.0";
+const char gc_version[] = "1.0.1.0";
 const char gc_deprecatedInterfaceMessage[] = "Usage of RVExtension interface is not supported, please use callExtension array syntax";
 extern const char* g_pszModuleFilename;
 

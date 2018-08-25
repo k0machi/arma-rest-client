@@ -25,6 +25,7 @@ namespace ozk
 		}
 		catch (const std::out_of_range& oor)
 		{
+			(void)oor;
 			this->m_query_target = "";
 			this->m_valid = false;
 			this->m_result = "Missing valid URL as a first parameter";
@@ -48,6 +49,7 @@ namespace ozk
 		}
 		catch (const std::out_of_range& oor) 
 		{
+			(void)oor;
 			log.warning("No query parameters supplied for %s", this->m_query_target);
 		}
 		catch (const std::exception& e)
@@ -61,6 +63,7 @@ namespace ozk
 		}
 		catch (const std::out_of_range& oor)
 		{
+			(void)oor;
 			log.warning("No arguments supplied for %s", this->m_query_target);
 		}
 		catch (const std::exception& e)

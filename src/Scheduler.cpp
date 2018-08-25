@@ -17,6 +17,7 @@ namespace ozk
 			auto job = m_finished_jobs.at(id);
 			return job;
 		} catch (const std::out_of_range& e) {
+			(void)e;
 			return nullptr;
 		}
 	}
