@@ -94,8 +94,9 @@ namespace ozk
 		return m_id;
 	}
 
-	void Job::Complete(const std::string& result)
+	void Job::Complete(const std::string& result, JobStatus status)
 	{
+		m_status = status;
 		m_result = result;
 		m_completed = true;
 	}
@@ -124,5 +125,9 @@ namespace ozk
 	bool Job::IsValid()
 	{
 		return this->m_valid;
+	}
+	JobStatus Job::GetStatus()
+	{
+		return this->m_status;
 	}
 }

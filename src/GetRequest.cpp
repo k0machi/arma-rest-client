@@ -21,6 +21,7 @@ namespace ozk
 		if (!this->IsValid())
 		{
 			this->m_completed = true;
+			this->m_status = JobStatus::RESULT_EXCEPTION_CAUGHT;
 			return;
 		}
 		try 
@@ -35,7 +36,7 @@ namespace ozk
 			if (parseJSON)
 			{
 				std::string sqfied = ozk::StringifyJSONtoSQF(result);
-				Complete(sqfied);
+				Complete(sqfied, JobStatus::RESULT_COMPLETE_JSON);
 			}
 			else
 			{
@@ -44,11 +45,11 @@ namespace ozk
 		}
 		catch (Poco::Exception& exc)
 		{
-			Complete(exc.className() + exc.displayText());
+			Complete(exc.className() + exc.displayText(), JobStatus::RESULT_EXCEPTION_CAUGHT);
 		}
 		catch (std::exception& e)
 		{
-			Complete(e.what());
+			Complete(e.what(), JobStatus::RESULT_EXCEPTION_CAUGHT);
 		}
 	}
 }

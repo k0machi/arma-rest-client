@@ -5,6 +5,21 @@
 #include <utility>
 
 namespace ozk {
+	enum class JobStatus
+	{
+		CALL_SUCCESS = 0x0,
+		CALL_E_GENERIC = 0x0f,
+		JOB_COMPLETE = 0x10,
+		JOB_INCOMPLETE = 0x11,
+		RESULT_COMPLETE = 0x20,
+		RESULT_COMPLETE_JSON = 0x21,
+		RESULT_SLICED = 0x22,
+		RESULT_NOTREADY = 0x2f,
+		RESULT_INVALIDINPUT = 0x30,
+		RESULT_EXCEPTION_CAUGHT = 0x31,
+		DEBUG_INFO_DUMP = 0xff
+	};
+
 	/**
 	 * \brief Job object represents a unit that can be executed via Execute() method and does some work which then can be acquired by calling GetResult() method.
 	 * All Results are of std::string type
@@ -54,12 +69,16 @@ namespace ozk {
 		* \return bool
 		*/
 		bool IsValid();
+		/*
+		* \brief Status of this work that will be returned to arma
+		*/
+		JobStatus GetStatus();
 	protected:
 		/**
 		 * \brief Set completion flag of a job and the result
 		 * \param result Result of executing the job
 		 */
-		void Complete(const std::string& result);
+		void Complete(const std::string& result, JobStatus status = JobStatus::RESULT_COMPLETE);
 		std::string GetURL();
 		//uri itself, e.g. http://example.com/api/getname/
 		std::string m_query_target;
@@ -73,6 +92,7 @@ namespace ozk {
 		std::string m_result;
 		bool m_completed;
 		bool m_valid{ true };
+		JobStatus m_status;
 	private:
 		int m_result_offset;
 		std::unordered_map<std::string, std::string> m_parameter_map;

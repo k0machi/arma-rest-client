@@ -25,22 +25,9 @@ std::vector<std::unique_ptr<ozk::Worker>> g_ExtensionWorkers;
  * TODO: Move to a config file
  */
 const int gc_numWorkers = 3;
-const char gc_version[] = "1.0.1.0";
+const char gc_version[] = "1.0.1.1";
 const char gc_deprecatedInterfaceMessage[] = "Usage of RVExtension interface is not supported, please use callExtension array syntax";
 extern const char* g_pszModuleFilename;
-
-enum StatusCodes
-{
-	CALL_SUCCESS = 0x0,
-	CALL_E_GENERIC = 0x0f,
-	JOB_COMPLETE = 0x10,
-	JOB_INCOMPLETE = 0x11,
-	RESULT_COMPLETE = 0x20,
-	RESULT_SLICED = 0x22,
-	RESULT_NOTREADY = 0x2f,
-	RESULT_INVALIDINPUT = 0x30,
-	DEBUG_INFO_DUMP = 0xff
-};
 
 /**
  * \brief Initialize the worker threads
@@ -136,12 +123,12 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 		catch (std::exception& e)
 		{
 			(void)e; //warning suppression
-			return RESULT_INVALIDINPUT;
+			return static_cast<int>(ozk::JobStatus::RESULT_INVALIDINPUT);
 		}
 		if (ozk::Scheduler::GetInstance().GetCompletedJob(id)) {
-			return JOB_COMPLETE;
+			return static_cast<int>(ozk::JobStatus::JOB_COMPLETE);
 		} else {
-			return JOB_INCOMPLETE;
+			return static_cast<int>(ozk::JobStatus::JOB_INCOMPLETE);
 		}
 	}
 	if (func == "GetResult") {
@@ -153,7 +140,7 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 		catch (std::exception& e)
 		{
 			(void)e;
-			return RESULT_INVALIDINPUT;
+			return static_cast<int>(ozk::JobStatus::RESULT_INVALIDINPUT);
 		}
 		ozk::Job* completedJob;
 		if ((completedJob = ozk::Scheduler::GetInstance().GetCompletedJob(id))) {
@@ -164,21 +151,21 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 
 			if (totalBytes < outputSize) {
 				strcpy_s(output, outputSize, result.c_str());
-				return RESULT_COMPLETE;
+				return static_cast<int>(completedJob->GetStatus());
 			}
 
 			auto bytesRemaining = totalBytes - completedJob->GetResultOffset();
 			if (bytesRemaining < outputSize) {
 				strcpy_s(output, outputSize, result.substr(completedJob->GetResultOffset(), std::string::npos).c_str());
 				completedJob->ResetResultOffset();
-				return RESULT_COMPLETE;
+				return static_cast<int>(completedJob->GetStatus());
 			}
 
 			strcpy_s(output, outputSize, result.substr(completedJob->GetResultOffset(), (outputSize - 1)).c_str());
 			completedJob->UpdateResultOffset(outputSize - 1);
-			return RESULT_SLICED;
+			return static_cast<int>(ozk::JobStatus::RESULT_SLICED);
 		}
-		return RESULT_NOTREADY;
+		return static_cast<int>(ozk::JobStatus::RESULT_NOTREADY);
 	}
 	if (func == "dump") {
 		std::ostringstream oss;
@@ -189,7 +176,7 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 			element++;
 		}
 		Logger::get("FileLogger").information(oss.str());
-		return DEBUG_INFO_DUMP;
+		return static_cast<int>(ozk::JobStatus::DEBUG_INFO_DUMP);
 	}
-	return CALL_E_GENERIC;
+	return static_cast<int>(ozk::JobStatus::CALL_E_GENERIC);
 }
