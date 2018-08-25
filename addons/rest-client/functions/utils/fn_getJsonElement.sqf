@@ -1,8 +1,15 @@
-params["_json", "_jsonPath"];
+params[
+	//SQF-JSON array as returned by rest-client
+	["_json", [], [[]]],
+	//Path to key using following notation: key.0.key
+	["_jsonPath", "", [""]]
+];
+
 scopeName "top";
 
 #define ARRAY_OOB 0x100
 #define OBJECT_KEY_NOT_FOUND 0x200
+#define CORRUPT_JSON 0x300
 
 private _errno = -1;
 private _errmsg = "";
@@ -54,6 +61,11 @@ while { !_found } do {
 			_currentNode = ((_currentNode#1)#_keyIndex)#1;
 			_currentPathDepth = _currentPathDepth + 1;
 
+		};
+		default {
+			_errno = CORRUPT_JSON;
+			_errmsg = format["An error occured when parsing %1 as SQF-JSON", _currentNode];
+			breakTo "top"; 
 		};
 	};
 
