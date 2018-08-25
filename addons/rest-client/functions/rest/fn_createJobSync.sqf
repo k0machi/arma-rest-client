@@ -1,8 +1,7 @@
 #include "..\..\script_macros.hpp"
-
 if (!canSuspend) exitWith { ["Scheduled environment is required for synchronous REST call"] call BIS_fnc_error };
-
-params ["_method", "_url", "_query", "_arguments"];
+params ["_jobParams", "_arrayRef"];
+_jobParams params ["_method", "_url", "_query", "_arguments"];
 
 private _result = "";
 private _id = -1;
@@ -16,10 +15,11 @@ switch (toLower _method) do {
 	};
 };
 
-if (_id == -1) exitWith {"#REST_CLIENT_SYNC_GENERIC_ERROR"};
+if (_id == -1) exitWith {
+	_arrayRef pushBack _result;
+};
 
 waitUntil { ((("extension" callExtension ["CheckJob", [_id]])#1) == JOB_COMPLETE) };
-
 
 _clientResult = "extension" callExtension ["GetResult", [_id]];
 _result = _clientResult#0;
@@ -30,4 +30,4 @@ if ((_clientResult#1) == RESULT_SLICED) then {
 	};
 };
 
-_result;
+_arrayRef pushBack _result;
