@@ -1,4 +1,4 @@
-private _result = ["GET", "http://10.25.2.1/", [["test", "mixed"]], []] call OZK_fnc_createJobSync;
+private _result = ["GET", "http://10.25.2.1/", [["test", "mixed"]], []] call OZK_fnc_createJobSyncSimple;
 
 LAST_RESULT = _result;
 LAST_RESULT_JSON = call compile _result;
