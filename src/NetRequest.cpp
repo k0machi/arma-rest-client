@@ -2,6 +2,7 @@
 #include "Poco/SharedPtr.h"
 #include "Poco/Logger.h"
 #include "Poco/StreamCopier.h"
+#include "Poco/Net/HTMLForm.h"
 extern const char* g_pszModuleFilename;
 
 namespace ozk 
@@ -61,6 +62,12 @@ namespace ozk
 				path = "/";
 			Poco::Net::HTTPRequest request(this->m_method, path, Poco::Net::HTTPRequest::HTTP_1_1);
 
+			if (this->m_method == Poco::Net::HTTPRequest::HTTP_POST)
+			{
+				request.setContentLength(this->m_request_body.length());
+				request.setContentType("application/x-www-form-urlencoded");
+			}				
+
 			std::ostream& requestStream = m_session->sendRequest(request);
 			requestStream << m_request_body;
 			std::istream& rs = m_session->receiveResponse(m_response);
@@ -96,9 +103,27 @@ namespace ozk
 	{
 		if (!params.empty())
 		{
-			for (const std::pair<std::string, std::string>& param : params)
+			// If you are using GET request, all parameters must be supplied in the URL
+			// If you are using POST request, all parameters must be supplied in the body of the request
+			// HTML 4 standard used to be strict about it, now there's nothing preventing you from mixing the two
+			// but it makes little sense because of the way we interface with arma through single param array
+			if (this->m_method == Poco::Net::HTTPRequest::HTTP_GET)
 			{
-				this->m_uri.addQueryParameter(param.first, param.second);
+				for (const std::pair<std::string, std::string>& param : params)
+				{
+					this->m_uri.addQueryParameter(param.first, param.second);
+				}
+			}
+			if (this->m_method == Poco::Net::HTTPRequest::HTTP_POST)
+			{
+				Poco::Net::HTMLForm form;
+				std::ostringstream oss;
+				for (const std::pair<std::string, std::string>& param : params)
+				{
+					form.add(param.first, param.second);
+				}
+				form.write(oss);
+				this->m_request_body = oss.str();
 			}
 		}
 	}

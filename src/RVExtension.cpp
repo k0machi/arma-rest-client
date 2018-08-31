@@ -3,6 +3,7 @@
 #include <iterator>
 #include "Scheduler.h"
 #include "GetRequest.h"
+#include "PostRequest.h"
 #include "Worker.h"
 #include "Poco/Logger.h"
 #include "Poco/AutoPtr.h"
@@ -114,6 +115,13 @@ int RVExtensionArgs(char * output, int outputSize, const char * function, const 
 		Logger::get("FileLogger").information("Added new GETRequest to queue, id: %d", id);
 		return id;
 	} 
+	if (func == "POSTRequest")
+	{
+		auto job = new ozk::POSTRequest(vecArgs);
+		auto id = ozk::Scheduler::GetInstance().AddJob(job);
+		Logger::get("FileLogger").information("Added new POSTRequest to queue, id: %d", id);
+		return id;
+	}
 	if (func == "CheckJob") {
 		int id;
 		try
