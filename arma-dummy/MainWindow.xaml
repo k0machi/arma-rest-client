@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:arma_dummy"
         mc:Ignorable="d"
-        Title="Arma-Dummy" Height="258.666" Width="300.333" ResizeMode="NoResize">
+        Title="Arma-Dummy" Height="306.704" Width="296.638" ResizeMode="NoResize">
     <Grid>
         <Label Content="callExtension" HorizontalAlignment="Left" Height="28" Margin="10,5,0,0" VerticalAlignment="Top" Width="92"/>
         <TextBox x:Name="funcCall_func_name" HorizontalAlignment="Left" Height="24" Margin="10,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="153" Text="function"/>
@@ -18,5 +18,6 @@
         <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="43" Margin="10,159,0,0" VerticalAlignment="Top" Width="266">
             <TextBox x:Name="ResultFld" TextWrapping="Wrap" Text="TextBox" Margin="0,0,-1,0" AcceptsReturn="True"/>
         </Border>
+        <TextBox x:Name="ReturnCode" TextWrapping="Wrap" Text="TextBox" Margin="10,215,0,0" AcceptsReturn="True" HorizontalAlignment="Left" Width="249" Height="43" VerticalAlignment="Top"/>
     </Grid>
 </Window>
